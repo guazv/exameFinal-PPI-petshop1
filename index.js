@@ -7,12 +7,12 @@ const porta = 3000;
 
 const server = express();
 
-// ===== DADOS EM MEMÓRIA =====
+
 let interessados = [];
 let pets = [];
 let adocoes = [];
 
-// ===== CONFIGURAÇÕES =====
+
 server.use(session({
     secret: "chaveSecretaPetShop",
     resave: true,
@@ -23,7 +23,7 @@ server.use(session({
 server.use(express.urlencoded({ extended: true }));
 server.use(cookieParser());
 
-// ===== MIDDLEWARE =====
+
 function verificarUsuarioLogado(req, res, next) {
     if (req.session.dadosLogin?.logado) {
         next();
@@ -32,7 +32,7 @@ function verificarUsuarioLogado(req, res, next) {
     }
 }
 
-// ===== LAYOUT PADRÃO =====
+
 function layout(titulo, conteudo, ultimoAcesso = "") {
     return `
     <!DOCTYPE html>
@@ -63,7 +63,7 @@ function layout(titulo, conteudo, ultimoAcesso = "") {
     `;
 }
 
-// ===== MENU =====
+
 server.get("/", verificarUsuarioLogado, (req, res) => {
     const ultimoAcesso = req.cookies?.ultimoAcesso;
     res.cookie("ultimoAcesso", new Date().toLocaleString());
@@ -80,7 +80,7 @@ server.get("/", verificarUsuarioLogado, (req, res) => {
     `, ultimoAcesso));
 });
 
-// ===== LOGIN =====
+
 server.get("/login", (req, res) => {
     res.send(layout("Login", `
         <div class="row justify-content-center">
@@ -121,7 +121,7 @@ server.get("/logout", (req, res) => {
     res.redirect("/login");
 });
 
-// ===== CADASTRO DE INTERESSADOS =====
+
 server.get("/interessados", verificarUsuarioLogado, (req, res) => {
     res.send(layout("Interessados", `
         <div class="card shadow">
@@ -176,7 +176,7 @@ server.get("/listaInteressados", verificarUsuarioLogado, (req, res) => {
     `));
 });
 
-// ===== CADASTRO DE PETS =====
+
 server.get("/pets", verificarUsuarioLogado, (req, res) => {
     res.send(layout("Pets", `
         <div class="card shadow">
@@ -231,7 +231,7 @@ server.get("/listaPets", verificarUsuarioLogado, (req, res) => {
     `));
 });
 
-// ===== ADOÇÃO =====
+
 server.get("/adotar", verificarUsuarioLogado, (req, res) => {
     const listaInteressados = interessados.map(i =>
         `<option value="${i.nome}">${i.nome}</option>`
@@ -288,7 +288,7 @@ server.post("/adotar", verificarUsuarioLogado, (req, res) => {
     }
 });
 
-// ===== SERVIDOR =====
+
 server.listen(porta, host, () => {
     console.log(`Servidor rodando em http://${host}:${porta}`);
 });
